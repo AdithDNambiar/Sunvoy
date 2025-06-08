@@ -1,0 +1,16 @@
+{
+  "name": "sunvoy-assessment",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && node dist/index.js"
+  },
+  "dependencies": {
+    "fetch-cookie": "^3.1.0",
+    "node-fetch": "^3.3.2",
+    "tough-cookie": "^5.1.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
