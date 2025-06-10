@@ -1,24 +1,21 @@
 import fetch from 'node-fetch';
+import { User } from './types.js';
 
-const USERS_API = 'https://challenge.sunvoy.com/users'; // 🔄 BACK TO THIS
+const USERS_API = 'https://challenge.sunvoy.com/api/users';
+const JSESSIONID_COOKIE = '9054fde2-3a4d-4080-87f4-047a3f71cc73';
 
-// Copy fresh cookie from Chrome DevTools (Application tab)
-const JSESSIONID_COOKIE = '55572ad0-459e-4853-9e9b-803592dbf2be';
-
-export async function fetchUsers() {
-  console.log('📡 Fetching users with session cookie...');
+export async function fetchUsers(): Promise<User[] | null> {
+  console.log('📡 Fetching users...');
 
   const response = await fetch(USERS_API, {
-    method: 'GET',
+    method: 'POST', // 🔥 this matters!
     headers: {
-      'Accept': 'application/json',
+      'Accept': '*/*',
       'User-Agent': 'Mozilla/5.0',
       'Cookie': `JSESSIONID=${JSESSIONID_COOKIE}`,
+      'Content-Length': '0',
     },
   });
-
-  console.log('Status:', response.status);
-  console.log('Content-Type:', response.headers.get('content-type'));
 
   if (!response.ok) {
     const html = await response.text();
@@ -27,6 +24,11 @@ export async function fetchUsers() {
   }
 
   const json = await response.json();
-  console.log('✅ Users fetched successfully.');
-  return json;
+
+  if (!Array.isArray(json)) {
+    console.error('❌ API response is not an array:', json);
+    return null;
+  }
+
+  return json as User[];
 }
