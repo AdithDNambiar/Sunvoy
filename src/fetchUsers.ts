@@ -2,33 +2,27 @@ import fetch from 'node-fetch';
 import { User } from './types.js';
 
 const USERS_API = 'https://challenge.sunvoy.com/api/users';
-const JSESSIONID_COOKIE = '9054fde2-3a4d-4080-87f4-047a3f71cc73';
+const JSESSIONID = 'd0ab3a99-dec0-420f-9bc2-8f2eabd1dd01';
 
 export async function fetchUsers(): Promise<User[] | null> {
-  console.log('📡 Fetching users...');
+  console.log('Fetching users...');
 
   const response = await fetch(USERS_API, {
-    method: 'POST', // 🔥 this matters!
+    method: 'POST',
     headers: {
       'Accept': '*/*',
       'User-Agent': 'Mozilla/5.0',
-      'Cookie': `JSESSIONID=${JSESSIONID_COOKIE}`,
+      'Cookie': `JSESSIONID=${JSESSIONID}`,
       'Content-Length': '0',
     },
   });
 
   if (!response.ok) {
     const html = await response.text();
-    console.error('❌ Error:', html);
+    console.error('Error:', html);
     return null;
   }
 
   const json = await response.json();
-
-  if (!Array.isArray(json)) {
-    console.error('❌ API response is not an array:', json);
-    return null;
-  }
-
-  return json as User[];
+  return Array.isArray(json) ? json as User[] : null;
 }
